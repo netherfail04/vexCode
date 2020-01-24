@@ -142,33 +142,61 @@ void TurnRight(int speed, int degs)
     BR.rotateFor((degs * -2),vex::rotationUnits::deg, speed * -1, vex::velocityUnits::pct, true);
 }
 
+void stack()
+{
+  //Ramp.rotateFor(vex::directionType::rev, 45, vex::rotationUnits::deg, true);
+  Ramp.resetRotation();
+  Ramp.rotateFor(45, vex::rotationUnits::deg, 40, vex::velocityUnits::pct, true);
+  
+  BR.spin(vex::directionType::fwd, 50, vex::percentUnits::pct);
+  FR.spin(vex::directionType::fwd, 50, vex::percentUnits::pct);
+  BL.spin(vex::directionType::rev, 50, vex::percentUnits::pct);
+  FL.spin(vex::directionType::rev, 50, vex::percentUnits::pct);
+  vex::task::sleep(1000);
+  BR.stop();
+  FR.stop();
+  BL.stop();
+  FL.stop();
+}
+
 void start_auton( void ) {
-  DeployArms(2.0f);
+  //DeployArms(2.0f);
   //Constant intake
   IntakeL.spin(vex::directionType::rev, 100, vex::velocityUnits::pct);
   IntakeR.spin(vex::directionType::fwd, 100, vex::velocityUnits::pct);
+  vex::task::sleep(1000);
+  //IntakeL.stop();
+  //IntakeR.stop();
   //Go Forward
   FW(0.5, true); 
   vex::task::sleep(500);
   TurnLeft(100, 45);
   TurnLeft(100, 45);
   FW(1.0, true);
-  vex::task::sleep(500);
+  vex::task::sleep(1000);
   TurnLeft(100, 45);
-  TurnLeft(100, 45);
-  FW(1.3, true);
-  vex::task::sleep(500);
+  //TurnLeft(100, 45);
+  FW(1.5, true);
+  vex::task::sleep(1500);
   IntakeL.stop();
   IntakeR.stop();
   ctrl1.Screen.clearScreen();
-  ctrl1.Screen.print("OUTTAKNG");
+  ctrl1.Screen.print("Stacking");
+
   IntakeL.spin(vex::directionType::fwd, 100, vex::velocityUnits::pct);
   IntakeR.spin(vex::directionType::rev, 100, vex::velocityUnits::pct);
-  FW(1.5, true);
-  vex::task::sleep(2000);
+  vex::task::sleep(4000);
   IntakeL.stop();
   IntakeR.stop();
-  BW(1.0);
+
+ // stack();
+ // IntakeL.spin(vex::directionType::fwd, 100, vex::velocityUnits::pct);
+ // IntakeR.spin(vex::directionType::rev, 100, vex::velocityUnits::pct);
+ // FW(1.5, true);
+ // vex::task::sleep(2000);
+ // IntakeL.stop();
+ // IntakeR.stop();
+ // BW(1.0);
   
   //vex::task::sleep(15000);
 }
@@ -189,6 +217,14 @@ void usercontrol( void ) {
       ctrl1.Screen.clearScreen();
       ctrl1.Screen.print("user activated auton");
       start_auton();
+    }
+
+    //QUICKSTACK
+    if(ctrl1.ButtonX.pressing() && ctrl1.ButtonDown.pressing())
+    {
+      ctrl1.Screen.clearScreen();
+      ctrl1.Screen.print("user activated auton");
+      stack();
     }
 
     //left-right
